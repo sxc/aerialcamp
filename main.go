@@ -27,25 +27,16 @@ func executeTemplate(w http.ResponseWriter, filepath string) {
 
 
 
-// func contactHandler(w http.ResponseWriter, r *http.Request) {
-// 	tplPath := filepath.Join("templates", "contact.gohtml")
-// 	executeTemplate(w, tplPath)
-// 	}
-
-// func faqHandler(w http.ResponseWriter, r *http.Request) {
-// 	tplPath := filepath.Join("templates", "faq.gohtml")
-// 	executeTemplate(w, tplPath)
-// 	}
-
-
 
 func main() {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
 	r.Get("/", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "home.gohtml"))))
+
 	r.Get("/contact", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "contact.gohtml"))))
-	r.Get("/faq", controllers.StaticHandler(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
+
+	r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Found", http.StatusNotFound)
