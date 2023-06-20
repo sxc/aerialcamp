@@ -12,6 +12,8 @@ import (
 )
 
 
+
+// add executeTemplate
 func executeTemplate(w http.ResponseWriter, filepath string) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	tpl, err := template.ParseFiles(filepath)
