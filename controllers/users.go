@@ -1,14 +1,13 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
-
-	"github.com/sxc/aerialcamp/views"
 )
 
 type Users struct {
 	Templates struct {
-		New views.Template
+		New Template
 	}
 }
 
@@ -18,4 +17,14 @@ type Users struct {
 func (u Users) New(w http.ResponseWriter, r *http.Request) {
 	// we need a view to render
 	u.Templates.New.Execute(w, nil)
+}
+
+func (u Users) Create(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprint(w, "Email: ", r.FormValue("email"))
+	fmt.Fprint(w, "Password: ", r.FormValue("password"))
 }
