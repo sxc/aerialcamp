@@ -15,6 +15,7 @@
 !go.mod
 !*.tmpl
 !*.gohtml
+!*.sql
 
 !README.md
 !LICENSE
