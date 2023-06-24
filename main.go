@@ -10,9 +10,8 @@ import (
 	"github.com/sxc/aerialcamp/views"
 	"github.com/sxc/aerialcamp/controllers"
 	"github.com/sxc/aerialcamp/templates"
+	"github.com/sxc/aerialcamp/models"
 )
-
-
 
 // add executeTemplate
 func executeTemplate(w http.ResponseWriter, filepath string) {
@@ -25,10 +24,26 @@ func executeTemplate(w http.ResponseWriter, filepath string) {
 	t.Execute(w, nil)
 }
 
-
-
-
 func main() {
+	cfg := models.DefaultPostgresConfig()
+	db, err := models.Open(cfg)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Successfully connected to the database.")
+	us := models.UserService{DB: db}
+	user, err := us.Create("john@example.com", "password")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(user)
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
