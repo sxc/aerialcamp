@@ -6,6 +6,8 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/csrf"
 )
 
 func Must(t Template, err error) Template {
@@ -28,16 +30,15 @@ func ParseFS(fs fs.FS, pattern ...string) (Template, error) {
 	if err != nil {
 		return Template{}, fmt.Errorf("parsing template: %v", err)
 	}
-
-	return Template{HTMLTpl: tpl}, nil
+	return Template{htmlTpl: tpl}, nil
 }
 
 type Template struct {
-	HTMLTpl *template.Template
+	htmlTpl *template.Template
 }
 
 func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface{}) {
-	tpl, err := t.HTMLTpl.Clone()
+	tpl, err := t.htmlTpl.Clone()
 	if err != nil {
 		log.Printf("cloning template: %v", err)
 		http.Error(w, "There was an error cloning the template.", http.StatusInternalServerError)
@@ -45,9 +46,9 @@ func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface
 	}
 	tpl = tpl.Funcs(
 		template.FuncMap{
-			// "csrfField": func() template.HTML {
-			// 	return csrf.TemplateField(r)
-			// },
+			"csrfField": func() template.HTML {
+				return csrf.TemplateField(r)
+			},
 		},
 	)
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
