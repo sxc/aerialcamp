@@ -12,7 +12,7 @@ import (
 	"github.com/sxc/aerialcamp/templates"
 	"github.com/sxc/aerialcamp/models"
 
-	//  "github.com/gorilla/csrf"
+	 "github.com/gorilla/csrf"
 )
 
 // add executeTemplate
@@ -95,11 +95,15 @@ func main() {
 	})
 
 	fmt.Println("Starting the server on :3000...")
-	// csrfKey := "safdlajfdsajflkdsjafljdslajfldsjafldjsalfj99909"
-	// csrfMw :=  csrf.Protect(
+	// 32 alphabet keys
+	csrfKey := "0123456789abcdefsafdsafdsafdsaffS"
+	csrfMw :=  csrf.Protect(
+		[]byte(csrfKey), 
+		csrf.Secure(false),
+	)
 		// []byte(csrfKey), 
 		// TODO: Fix this before deployng
 		// csrf.Secure(false))
 	// http.ListenAndServe(":3000", csrfMw(r))
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(":3000", csrfMw(r))
 }
