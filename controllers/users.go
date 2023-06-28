@@ -93,12 +93,6 @@ func (u Users) CurrentUser(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusFound)
 		return
 	}
-	// email, err := r.Cookie("email")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	http.Error(w, "Something went wrong.", http.StatusInternalServerError)
-	// 	return
-	// }
 	user, err := u.SessionService.User(token)
 	if err != nil {
 		fmt.Println(err)
@@ -106,6 +100,4 @@ func (u Users) CurrentUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "Current user : %s\n", user.Email)
-
-	// fmt.Fprintf(w, "Email cookie: %v", email.Value)
 }
