@@ -1,7 +1,9 @@
 package models
 
 import (
+	"crypto/sha256"
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 
 	"github.com/sxc/aerialcamp/rand"
@@ -36,8 +38,18 @@ func (ss *SessionService) Create(userID int) (*Session, error) {
 		return nil, fmt.Errorf("create: %w", err)
 	}
 	session := Session{
-		UserID: userID,
-		Token:  token,
+		UserID:    userID,
+		Token:     token,
+		TokenHash: ss.hash(token),
+	}
+	// Insert to DB
+	row := ss.DB.QueryRow(`INSERT INTO sessions 
+	(user_id, token_hash) 
+	VALUES ($1, $2) 
+	RETURNING id`, session.UserID, session.TokenHash)
+	err = row.Scan(&session.ID)
+	if err != nil {
+		return nil, fmt.Errorf("create: %w", err)
 	}
 	return &session, nil
 }
@@ -45,4 +57,9 @@ func (ss *SessionService) Create(userID int) (*Session, error) {
 func (ss *SessionService) User(token string) (*User, error) {
 
 	return nil, nil
+}
+
+func (ss *SessionService) hash(token string) string {
+	tokenHash := sha256.Sum256([]byte(token))
+	return base64.RawURLEncoding.EncodeToString(tokenHash[:])
 }
