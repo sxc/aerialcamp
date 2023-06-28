@@ -36,7 +36,11 @@ func main() {
 
 	userService := models.UserService{
 		DB: db,
-		}
+	}
+
+	sessionService := models.SessionService{
+		DB: db,
+	}
 
 	err = db.Ping()
 	if err != nil {
@@ -71,6 +75,7 @@ func main() {
 
 	usersC := controllers.Users{
 		UserService: &userService,
+		SessionService: &sessionService,
 	}
 	usersC.Templates.New = views.Must(views.ParseFS(
 		templates.FS,
