@@ -3,16 +3,17 @@ package main
 import (
 	"fmt"
 	"net/http"
+
 	// "log"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/sxc/aerialcamp/views"
 	"github.com/sxc/aerialcamp/controllers"
-	"github.com/sxc/aerialcamp/templates"
 	"github.com/sxc/aerialcamp/models"
+	"github.com/sxc/aerialcamp/templates"
+	"github.com/sxc/aerialcamp/views"
 
-	 "github.com/gorilla/csrf"
+	"github.com/gorilla/csrf"
 )
 
 // add executeTemplate
@@ -62,37 +63,37 @@ func main() {
 
 	r.Use(middleware.Logger)
 	r.Get("/", controllers.StaticHandler(
-		views.Must(views.ParseFS(templates.FS, 
-		"home.gohtml", "tailwind.gohtml"))))
+		views.Must(views.ParseFS(templates.FS,
+			"home.gohtml", "tailwind.gohtml"))))
 
 	r.Get("/contact", controllers.StaticHandler(
-		views.Must(views.ParseFS(templates.FS,  
-		"contact.gohtml", "tailwind.gohtml"))))
+		views.Must(views.ParseFS(templates.FS,
+			"contact.gohtml", "tailwind.gohtml"))))
 
 	r.Get("/faq", controllers.FAQ(
-		views.Must(views.ParseFS(templates.FS, 
-		"faq.gohtml", "tailwind.gohtml"))))
+		views.Must(views.ParseFS(templates.FS,
+			"faq.gohtml", "tailwind.gohtml"))))
 
 	usersC := controllers.Users{
-		UserService: &userService,
+		UserService:    &userService,
 		SessionService: &sessionService,
 	}
 	usersC.Templates.New = views.Must(views.ParseFS(
 		templates.FS,
 		"signup.gohtml", "tailwind.gohtml",
-		))
+	))
 
 	usersC.Templates.SignIn = views.Must(views.ParseFS(
 		templates.FS,
 		"signin.gohtml", "tailwind.gohtml",
-		))
+	))
 
 	r.Get("/signup", usersC.New)
 	r.Post("/users", usersC.Create)
 
 	r.Get("/signin", usersC.SignIn)
 	r.Post("/signin", usersC.ProcessSignIn)
-
+	r.Post("/signout", usersC.PorcessSignOut)
 	r.Get("/users/me", usersC.CurrentUser)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
@@ -102,13 +103,13 @@ func main() {
 	fmt.Println("Starting the server on :3000...")
 	// 32 alphabet keys
 	csrfKey := "0123456789abcdefsafdsafdsafdsaffS"
-	csrfMw :=  csrf.Protect(
-		[]byte(csrfKey), 
+	csrfMw := csrf.Protect(
+		[]byte(csrfKey),
 		csrf.Secure(false),
 	)
-		// []byte(csrfKey), 
-		// TODO: Fix this before deployng
-		// csrf.Secure(false))
+	// []byte(csrfKey),
+	// TODO: Fix this before deployng
+	// csrf.Secure(false))
 	// http.ListenAndServe(":3000", csrfMw(r))
 	http.ListenAndServe(":3000", csrfMw(r))
 }
