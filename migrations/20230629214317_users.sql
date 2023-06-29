@@ -1,9 +1,13 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL
+
+id SERIAL PRIMARY KEY,
+
+email TEXT UNIQUE NOT NULL,
+
+password_hash TEXT NOT NULL
+
 );
 -- +goose StatementEnd
 
