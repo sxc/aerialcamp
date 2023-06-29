@@ -11,7 +11,7 @@ import (
 type User struct {
 	ID           int
 	Email        string
-	Passwordhash string
+	PasswordHash string
 }
 
 type UserService struct {
@@ -27,7 +27,7 @@ func (us *UserService) Create(email, password string) (*User, error) {
 	passwordHash := string(hashedBytes)
 	user := User{
 		Email:        email,
-		Passwordhash: passwordHash,
+		PasswordHash: passwordHash,
 	}
 	row := us.DB.QueryRow(
 		`INSERT INTO users (email, password_hash) 
@@ -46,11 +46,11 @@ func (us *UserService) Authenticate(email, password string) (*User, error) {
 	}
 	row := us.DB.QueryRow(
 		`SELECT id, password_hash FROM users WHERE email = $1`, email)
-	err := row.Scan(&user.ID, &user.Passwordhash)
+	err := row.Scan(&user.ID, &user.PasswordHash)
 	if err != nil {
 		return nil, fmt.Errorf("could not authenticate user: %v", err)
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(user.Passwordhash), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
 		return nil, fmt.Errorf("could not authenticate user: %v", err)
 	}
