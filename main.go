@@ -35,6 +35,11 @@ func main() {
 	}
 	defer db.Close()
 
+	err = models.Migrate(db, "migrations")
+	if err != nil {
+		panic(err)
+	}
+
 	userService := models.UserService{
 		DB: db,
 	}
@@ -48,12 +53,6 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Successfully connected to the database.")
-	// us := models.UserService{DB: db}
-	// user, err := us.Create("john01@example.com", "password")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println(user)
 
 	r := chi.NewRouter()
 
