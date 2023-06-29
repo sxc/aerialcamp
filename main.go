@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/sxc/aerialcamp/controllers"
+	"github.com/sxc/aerialcamp/migrations"
 	"github.com/sxc/aerialcamp/models"
 	"github.com/sxc/aerialcamp/templates"
 	"github.com/sxc/aerialcamp/views"
@@ -35,7 +36,7 @@ func main() {
 	}
 	defer db.Close()
 
-	err = models.Migrate(db, "migrations")
+	err = models.MigrateFS(db, migrations.FS, ".")
 	if err != nil {
 		panic(err)
 	}
