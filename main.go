@@ -68,6 +68,11 @@ func main() {
 		"signin.gohtml", "tailwind.gohtml",
 	))
 
+	usersC.Templates.ForgotPassword = views.Must(views.ParseFS(
+		templates.FS,
+		"forgot-pw.gohtml", "tailwind.gohtml",
+	))
+
 	umw := controllers.UserMiddleware{
 		SessionService: &sessionService,
 	}
@@ -97,6 +102,8 @@ func main() {
 	r.Get("/signin", usersC.SignIn)
 	r.Post("/signin", usersC.ProcessSignIn)
 	r.Post("/signout", usersC.PorcessSignOut)
+	r.Get("/forgot-pw", usersC.ForgotPassword)
+	r.Post("/forgot-pw", usersC.ProcessForgotPassword)
 	// r.Get("/users/me", usersC.CurrentUser)
 	r.Route("/users/me", func(r chi.Router) {
 		r.Use(umw.RequireUser)
