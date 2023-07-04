@@ -22,7 +22,7 @@ type Users struct {
 	UserService          *models.UserService
 	SessionService       *models.SessionService
 	PasswordResetService *models.PasswordResetService
-	EmailSercie          *models.EmailService
+	EmailService         *models.EmailService
 }
 
 func (u Users) New(w http.ResponseWriter, r *http.Request) {
@@ -142,7 +142,7 @@ func (u Users) ProcessForgotPassword(w http.ResponseWriter, r *http.Request) {
 		"token": {pwReset.Token},
 	}
 	resetURL := "http://localhost:3000/reset-pw?" + vals.Encode()
-	err = u.EmailSercie.ForgotPassword(data.Email, resetURL)
+	err = u.EmailService.ForgotPassword(data.Email, resetURL)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, "Something went wrong.", http.StatusInternalServerError)
