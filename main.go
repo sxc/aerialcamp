@@ -3,11 +3,14 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 
 	// "log"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/joho/godotenv"
 	"github.com/sxc/aerialcamp/controllers"
 	"github.com/sxc/aerialcamp/migrations"
 	"github.com/sxc/aerialcamp/models"
@@ -17,11 +20,58 @@ import (
 	"github.com/gorilla/csrf"
 )
 
+type config struct {
+	PSQL models.PostgresConfig
+	SMTP models.SMTPConfig
+	CSRF struct {
+		Key    string
+		Secure bool
+	}
+	Server struct {
+		Address string
+	}
+}
+
+func loadEnvConfig() (config, error) {
+	var cfg config
+	err := godotenv.Load()
+	if err != nil {
+		return cfg, err
+	}
+
+	// TODO: PSQL
+	cfg.PSQL = models.DefaultPostgresConfig()
+
+	// TODO: SMTP
+	cfg.SMTP.Host = os.Getenv("SMTP_HOST")
+	portStr := os.Getenv("SMTP_PORT")
+	cfg.SMTP.Port, err = strconv.Atoi(portStr)
+	if err != nil {
+		return cfg, err
+	}
+	cfg.SMTP.User = os.Getenv("SMTP_USERNAME")
+	cfg.SMTP.Password = os.Getenv("SMTP_PASSWORD")
+
+	// TODO: CSRF
+	cfg.CSRF.Key = "0123456789abcdefsafdsafdsafdsaffS"
+	cfg.CSRF.Secure = false
+
+	// TODO: Server
+	cfg.Server.Address = ":3000"
+
+	return cfg, nil
+}
+
 func main() {
+	cfg, err := loadEnvConfig()
+	if err != nil {
+		panic(err)
+	}
+
 	// Set up the database
 
-	cfg := models.DefaultPostgresConfig()
-	db, err := models.Open(cfg)
+	// cfg := models.DefaultPostgresConfig()
+	db, err := models.Open(cfg.PSQL)
 	if err != nil {
 		panic(err)
 	}
@@ -33,12 +83,16 @@ func main() {
 	}
 
 	// Setup the services
-	userService := models.UserService{
+	userService := &models.UserService{
 		DB: db,
 	}
-	sessionService := models.SessionService{
+	sessionService := &models.SessionService{
 		DB: db,
 	}
+	pwResetService := &models.PasswordResetService{
+		DB: db,
+	}
+	emailService := models.NewEmailService(cfg.SMTP)
 
 	err = db.Ping()
 	if err != nil {
@@ -57,17 +111,20 @@ func main() {
 	// fmt.Println(user)
 
 	//  Setup the middleware
-	csrfKey := "0123456789abcdefsafdsafdsafdsaffS"
+	// csrfKey := "0123456789abcdefsafdsafdsafdsaffS"
 	csrfMw := csrf.Protect(
-		[]byte(csrfKey),
-		csrf.Secure(false),
+		[]byte(cfg.CSRF.Key),
+		csrf.Secure(cfg.CSRF.Secure),
 	)
 
 	// Setup controllers
 	usersC := controllers.Users{
-		UserService:    &userService,
-		SessionService: &sessionService,
+		UserService:          userService,
+		SessionService:       sessionService,
+		PasswordResetService: pwResetService,
+		EmailService:         emailService,
 	}
+
 	usersC.Templates.New = views.Must(views.ParseFS(
 		templates.FS,
 		"signup.gohtml", "tailwind.gohtml",
@@ -84,7 +141,7 @@ func main() {
 	))
 
 	umw := controllers.UserMiddleware{
-		SessionService: &sessionService,
+		SessionService: sessionService,
 	}
 
 	// Setup router and routes
@@ -125,6 +182,9 @@ func main() {
 	})
 
 	// Start the server
-	fmt.Println("Starting the server on :3000...")
-	http.ListenAndServe(":3000", r)
+	fmt.Printf("Starting the server on %s...\n", cfg.Server.Address)
+	err = http.ListenAndServe(cfg.Server.Address, r)
+	if err != nil {
+		panic(err)
+	}
 }
