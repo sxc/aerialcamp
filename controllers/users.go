@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
 	"net/url"
 
 	"github.com/sxc/aerialcamp/context"
+	apperrors "github.com/sxc/aerialcamp/errors"
 	"github.com/sxc/aerialcamp/models"
 
 	"github.com/gorilla/csrf"
@@ -46,6 +48,10 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 	data.Password = r.FormValue("password")
 	user, err := u.UserService.Create(data.Email, data.Password)
 	if err != nil {
+		if errors.Is(err, models.ErrEmailTaken) {
+			err = apperrors.Public(err, "That email address is already associated with an account.")
+
+		}
 		u.Templates.New.Execute(w, r, data, err)
 		// fmt.Println(err)
 		// http.Error(w, "Something went wrong.", http.StatusInternalServerError)
