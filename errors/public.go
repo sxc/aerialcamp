@@ -11,8 +11,8 @@ func Public(err error, msg string) error {
 }
 
 type publicError struct {
-	error error
-	msg   string
+	err error
+	msg string
 }
 
 func (pe publicError) Error() string {
@@ -24,5 +24,5 @@ func (pe publicError) Public() string {
 }
 
 func (pe publicError) Unwrap() error {
-	return pe.error
+	return pe.err
 }
