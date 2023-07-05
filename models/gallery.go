@@ -23,7 +23,7 @@ func (service *GalleryService) Create(title string, userID int) (*Gallery, error
 	}
 	row := service.DB.QueryRow(`
 	INSERT INTO galleries (title, user_id) 
-	VALUES ($1, $2) RETURNING id`, gallery.Title, gallery.userID)
+	VALUES ($1, $2) RETURNING id`, gallery.Title, gallery.UserID)
 	err := row.Scan(&gallery.ID)
 	if err != nil {
 		return nil, fmt.Errorf("create gallery: %w", err)
@@ -82,6 +82,16 @@ func (service *GalleryService) Update(gallery *Gallery) error {
 	WHERE id = $1`, gallery.ID, gallery.Title)
 	if err != nil {
 		return fmt.Errorf("update gallery: %w", err)
+	}
+	return nil
+}
+
+func (service *GalleryService) Delete(id int) error {
+	_, err := service.DB.Exec(`
+	DELETE FROM galleries
+	WHERE id = $1`, id)
+	if err != nil {
+		return fmt.Errorf("delete gallery: %w", err)
 	}
 	return nil
 }
