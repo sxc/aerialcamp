@@ -158,6 +158,11 @@ func main() {
 		"galleries/edit.gohtml", "tailwind.gohtml",
 	))
 
+	galleriesC.Templates.Index = views.Must(views.ParseFS(
+		templates.FS,
+		"galleries/index.gohtml", "tailwind.gohtml",
+	))
+
 	umw := controllers.UserMiddleware{
 		SessionService: sessionService,
 	}
