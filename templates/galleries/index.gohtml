@@ -30,7 +30,7 @@
                             text-xs
                             rounded"                        
                         >Edit</a>
-                        <form action="galleries/{{.ID}}/delte" method="post"
+                        <form action="galleries/{{.ID}}/delete" method="post"
                             onsubmit="return confirm('Are you sure to delete this gallery?')">
                             {{csrfField}}
                             <button type="submit"
