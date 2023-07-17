@@ -7,7 +7,8 @@
         <form action="/users" method="post">
             <div class="hidden">
                 {{/* {{csrfField}} */}}
-                {{.CSRFField}}
+                {{/* {{.CSRFField}} */}}
+                  {{csrfField}}
             </div>
             <div class="py-2">
                 <label for="email" class="text-sm fotn-semibold text-gray-800">Email Address</label>
