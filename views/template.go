@@ -40,6 +40,7 @@ func ParseFS(fs fs.FS, pattern ...string) (Template, error) {
 			"errors": func() []string {
 				return nil
 			},
+			// "pathEscape": url.PathEscape,
 		},
 	)
 	tpl, err := tpl.ParseFS(fs, pattern...)
