@@ -225,13 +225,14 @@ func (g Galleries) UploadImage(w http.ResponseWriter, r *http.Request) {
 
 		err = g.GalleryService.CreateImage(gallery.ID, fileHeader.Filename, file)
 		if err != nil {
+			var fileErr models.FileError
+			if errors.As(err, &fileErr) {
+				msg := fmt.Sprintf("%v has an in valid content type or extension. Only pgn, gif, and jpg files can be upload.", fileHeader.Filename)
+				http.Error(w, msg, http.StatusBadRequest)
+			}
 			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 			return
 		}
-
-		// fmt.Printf("Attempting to upload %v for gallery %d.\n", fileHeader.Filename, gallery.ID)
-		// io.Copy(w, file)
-		// return
 	}
 	editPath := fmt.Sprintf("/galleries/%d/edit", gallery.ID)
 	http.Redirect(w, r, editPath, http.StatusFound)
