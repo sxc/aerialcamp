@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -109,8 +110,9 @@ func (g Galleries) Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	type Image struct {
-		GalleryID int
-		Filename  string
+		GalleryID       int
+		Filename        string
+		FilenameEscaped string
 	}
 	var data struct {
 		ID     int
@@ -127,8 +129,9 @@ func (g Galleries) Show(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, image := range images {
 		data.Images = append(data.Images, Image{
-			GalleryID: image.GalleryID,
-			Filename:  image.Filename,
+			GalleryID:       image.GalleryID,
+			Filename:        image.Filename,
+			FilenameEscaped: url.PathEscape(image.Filename),
 		})
 	}
 	g.Templates.Show.Execute(w, r, data)
@@ -167,26 +170,37 @@ func (g Galleries) Image(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid ID", http.StatusNotFound)
 		return
 	}
-	images, err := g.GalleryService.Images(galleryID)
+	image, err := g.GalleryService.Image(galleryID, filename)
 	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			http.Error(w, "Image not found", http.StatusNotFound)
+			return
+		}
 		fmt.Println(err)
 		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 		return
 	}
-	var requestdImage models.Image
-	imageFound := false
-	for _, image := range images {
-		if image.Filename == filename {
-			requestdImage = image
-			imageFound = true
-			break
-		}
-	}
-	if !imageFound {
-		http.Error(w, "Image not found", http.StatusNotFound)
-		return
-	}
-	http.ServeFile(w, r, requestdImage.Path)
+
+	// images, err := g.GalleryService.Images(galleryID)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	http.Error(w, "Something went wrong", http.StatusInternalServerError)
+	// 	return
+	// }
+	// var requestdImage models.Image
+	// imageFound := false
+	// for _, image := range images {
+	// 	if image.Filename == filename {
+	// 		requestdImage = image
+	// 		imageFound = true
+	// 		break
+	// 	}
+	// }
+	// if !imageFound {
+	// 	http.Error(w, "Image not found", http.StatusNotFound)
+	// 	return
+	// }
+	http.ServeFile(w, r, image.Path)
 }
 
 type galleryOpt func(http.ResponseWriter, *http.Request, *models.Gallery) error
