@@ -109,7 +109,6 @@ func (service *GalleryService) Delete(id int) error {
 }
 
 func (service *GalleryService) Images(galleryID int) ([]Image, error) {
-	// TODO: Implement this
 	globPattern := filepath.Join(service.galleryDir(galleryID), "*")
 	allFiles, err := filepath.Glob(globPattern)
 	if err != nil {
@@ -155,7 +154,7 @@ func (service *GalleryService) galleryDir(id int) string {
 	if imagesDir == "" {
 		imagesDir = "images"
 	}
-	return filepath.Join(imagesDir, fmt.Sprintf("%d", id))
+	return filepath.Join(imagesDir, fmt.Sprintf("gallery-%d", id))
 }
 
 func hasExtension(file string, extensions []string) bool {
