@@ -32,6 +32,10 @@
             </div>
         </form>
         <div class="py-4">
+            {{template "upload_image_form" .}}
+        </div>
+
+        <div class="py-4">
             <h2 class="p-4  text-sm font-semibold text-gray-800">Current Images</h2>
             <div class="py-2 grid grid-cols-8 gap-2">
                 {{range .Images}}
@@ -79,6 +83,34 @@
                 border border-red-400
                 rounded 
                 ">Delete
+                </button>
+</form>
+{{end}}
+
+{{define "upload_image_form"}}
+<form action="/galleries/{{.ID}}/images" 
+    method="post"
+    enctype="multipart/form-data">
+    {{csrfField}}
+    <div class="py-2">
+        <label for="image" class="block text-sm font-semibold text-gray-800">
+        Add images
+        <p class="py-2 text-xs text-gray-600 font-normal">
+            Please only unload jpg, png, and gif files.
+        </p>
+        </label>
+        <input type="file" multiple 
+        accept="image/png, image/gif, image/jpeg" 
+        name="image" 
+        id="image">
+    </div>
+    <button type="submit" 
+                class="
+                py-2 px-8
+                bg-indigo-600 hover:bg-indigo-700
+                text-white text-lg font-bold
+                rounded 
+                ">Upload
                 </button>
 </form>
 {{end}}
