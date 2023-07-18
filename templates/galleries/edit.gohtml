@@ -36,6 +36,9 @@
             <div class="py-2 grid grid-cols-8 gap-2">
                 {{range .Images}}
                     <div class="h-min w-full relative">
+                        <div class="absolute top-2 right-2">
+                            {{template "delete_image_form" .}}
+                        </div>
                         <a href="/galleries/{{.GalleryID}}/images/{{.FilenameEscaped}}">
                             <img class="w-full" src="/galleries/{{.GalleryID}}/images/{{.FilenameEscaped}}">
                         </a>
@@ -62,3 +65,20 @@
     </div>
 </div>
 {{template "footer" .}}
+
+{{define "delete_image_form"}}
+<form action="/galleries/{{.GalleryID}}/images/{{.FilenameEscaped}}/delete" 
+    method="post"
+    onsubmit="return confirm('Are you sure to delete this image?');">
+    {{csrfField}}
+    <button type="submit" 
+                class="
+                py-1
+                text-xs text-red-800
+                bg-red-100 
+                border border-red-400
+                rounded 
+                ">Delete
+                </button>
+</form>
+{{end}}

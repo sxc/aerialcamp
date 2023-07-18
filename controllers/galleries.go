@@ -199,27 +199,22 @@ func (g Galleries) Image(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 		return
 	}
-
-	// images, err := g.GalleryService.Images(galleryID)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	http.Error(w, "Something went wrong", http.StatusInternalServerError)
-	// 	return
-	// }
-	// var requestdImage models.Image
-	// imageFound := false
-	// for _, image := range images {
-	// 	if image.Filename == filename {
-	// 		requestdImage = image
-	// 		imageFound = true
-	// 		break
-	// 	}
-	// }
-	// if !imageFound {
-	// 	http.Error(w, "Image not found", http.StatusNotFound)
-	// 	return
-	// }
 	http.ServeFile(w, r, image.Path)
+}
+
+func (g Galleries) DeleteImage(w http.ResponseWriter, r *http.Request) {
+	filename := chi.URLParam(r, "filename")
+	gallery, err := g.galleryByID(w, r, userMustOwnGallery)
+	if err != nil {
+		return
+	}
+	err = g.GalleryService.DeleteImage(gallery.ID, filename)
+	if err != nil {
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		return
+	}
+	editPath := fmt.Sprintf("/galleries/%d/edit", gallery.ID)
+	http.Redirect(w, r, editPath, http.StatusFound)
 }
 
 type galleryOpt func(http.ResponseWriter, *http.Request, *models.Gallery) error
