@@ -186,7 +186,6 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(csrfMw)
 	r.Use(umw.SetUser)
-	r.Use(umw.SetUser)
 
 	r.Use(middleware.Logger)
 	r.Get("/", controllers.StaticHandler(
