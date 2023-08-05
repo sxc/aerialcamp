@@ -40,7 +40,18 @@ func loadEnvConfig() (config, error) {
 	}
 
 	// TODO: PSQL
-	cfg.PSQL = models.DefaultPostgresConfig()
+	// cfg.PSQL = models.DefaultPostgresConfig()
+	cfg.PSQL.Host = os.Getenv("POSTGRES_HOST")
+	// postgresPortStr := os.Getenv("POSTGRES_PORT")
+	// cfg.PSQL.Port, err = strconv.Atoi(postgresPortStr)
+	// if err != nil {
+	// return cfg, err
+	// }
+	cfg.PSQL.Port = os.Getenv("POSTGRES_PORT")
+	cfg.PSQL.User = os.Getenv("POSTGRES_USER")
+	cfg.PSQL.Password = os.Getenv("POSTGRES_PASSWORD")
+	cfg.PSQL.Database = os.Getenv("POSTGRES_DATABASE")
+	cfg.PSQL.SSLMode = os.Getenv("POSTGRES_SSLMODE")
 
 	// TODO: SMTP
 	cfg.SMTP.Host = os.Getenv("SMTP_HOST")
