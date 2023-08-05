@@ -64,12 +64,14 @@ func loadEnvConfig() (config, error) {
 	cfg.SMTP.Password = os.Getenv("SMTP_PASSWORD")
 
 	// TODO: CSRF
-	cfg.CSRF.Key = "0123456789abcdefsafdsafdsafdsaffS"
+	// cfg.CSRF.Key = "0123456789abcdefsafdsafdsafdsaffS"
+	// cfg.CSRF.Secure = false
+	cfg.CSRF.Key = os.Getenv("CSRF_KEY")
 	cfg.CSRF.Secure = false
 
 	// TODO: Server
-	cfg.Server.Address = ":3000"
-
+	// cfg.Server.Address = ":3000"
+	cfg.Server.Address = os.Getenv("SERVER_ADDRESS")
 	return cfg, nil
 }
 
