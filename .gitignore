@@ -17,6 +17,7 @@
 !*.gohtml
 !*.sql
 !modd.conf
+!*.yml
 
 !README.md
 !LICENSE
