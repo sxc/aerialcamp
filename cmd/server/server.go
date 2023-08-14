@@ -39,21 +39,20 @@ func loadEnvConfig() (config, error) {
 		return cfg, err
 	}
 
-	// TODO: PSQL
-	// cfg.PSQL = models.DefaultPostgresConfig()
-	cfg.PSQL.Host = os.Getenv("POSTGRES_HOST")
-	// postgresPortStr := os.Getenv("POSTGRES_PORT")
-	// cfg.PSQL.Port, err = strconv.Atoi(postgresPortStr)
-	// if err != nil {
-	// return cfg, err
-	// }
-	cfg.PSQL.Port = os.Getenv("POSTGRES_PORT")
-	cfg.PSQL.User = os.Getenv("POSTGRES_USER")
-	cfg.PSQL.Password = os.Getenv("POSTGRES_PASSWORD")
-	cfg.PSQL.Database = os.Getenv("POSTGRES_DATABASE")
-	cfg.PSQL.SSLMode = os.Getenv("POSTGRES_SSLMODE")
+	// PSQL
+	cfg.PSQL = models.PostgresConfig{
+		Host:     os.Getenv("POSTGRES_HOST"),
+		Port:     os.Getenv("POSTGRES_PORT"),
+		User:     os.Getenv("POSTGRES_USER"),
+		Password: os.Getenv("POSTGRES_PASSWORD"),
+		Database: os.Getenv("POSTGRES_DATABASE"),
+		SSLMode:  os.Getenv("POSTGRES_SSLMODE"),
+	}
+	if cfg.PSQL.Host == "" && cfg.PSQL.Port == "" {
+		return cfg, fmt.Errorf("POSTGRES_HOST and POSTGRES_PORT must be set")
+	}
 
-	// TODO: SMTP
+	// SMTP
 	cfg.SMTP.Host = os.Getenv("SMTP_HOST")
 	portStr := os.Getenv("SMTP_PORT")
 	cfg.SMTP.Port, err = strconv.Atoi(portStr)
@@ -63,14 +62,11 @@ func loadEnvConfig() (config, error) {
 	cfg.SMTP.User = os.Getenv("SMTP_USERNAME")
 	cfg.SMTP.Password = os.Getenv("SMTP_PASSWORD")
 
-	// TODO: CSRF
-	// cfg.CSRF.Key = "0123456789abcdefsafdsafdsafdsaffS"
-	// cfg.CSRF.Secure = false
+	//  CSRF
 	cfg.CSRF.Key = os.Getenv("CSRF_KEY")
-	cfg.CSRF.Secure = false
+	cfg.CSRF.Secure = os.Getenv("CSRF_SECURE") == "true"
 
-	// TODO: Server
-	// cfg.Server.Address = ":3000"
+	// Server
 	cfg.Server.Address = os.Getenv("SERVER_ADDRESS")
 	return cfg, nil
 }
