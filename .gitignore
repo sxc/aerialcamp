@@ -22,6 +22,8 @@
 !README.md
 !LICENSE
 
+!*.css
+
 # !Makefile
 
 # ...even if they are in subdirectories
