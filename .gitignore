@@ -18,6 +18,7 @@
 !*.sql
 !modd.conf
 !*.yml
+!Dockerfile
 
 !README.md
 !LICENSE
