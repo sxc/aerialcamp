@@ -8,12 +8,8 @@ services:
     restart: always
     volumes:
       - ~/data/guanyuchi.com/images:/app/images
-    # Test, remove before deployment
-    # ports:
-    #   - 3000:3000
     depends_on:
       - db
-
 
   caddy:
     image: caddy 
