@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - ./images:/app/images
+      - ~/data/guanyuchi.com/images:/app/images
     # Test, remove before deployment
     # ports:
     #   - 3000:3000
@@ -23,4 +23,13 @@ services:
       - 443:443
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+
+  db:
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - ~/data/guanyuchi.com/psql:/var/lib/postgresql/data/pgdata
     
