@@ -21,6 +21,7 @@
 !Dockerfile
 !Caddyfile
 !tailwind.config.js
+!.env.template
 
 !README.md
 !LICENSE
