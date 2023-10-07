@@ -112,19 +112,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Successfully connected to the database.")
-	// us := models.UserService{DB: db}
 
-	// user, err := us.Create("john12@example.com", "password")
-
-	// user, err := us.Create("john01@example.com", "password")
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println(user)
-
-	//  Setup the middleware
-	// csrfKey := "0123456789abcdefsafdsafdsafdsaffS"
 	csrfMw := csrf.Protect(
 		[]byte(cfg.CSRF.Key),
 		csrf.Secure(cfg.CSRF.Secure),
