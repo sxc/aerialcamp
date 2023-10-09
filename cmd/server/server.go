@@ -77,7 +77,6 @@ func main() {
 
 	// Set up the database
 
-	// cfg := models.DefaultPostgresConfig()
 	db, err := models.Open(cfg.PSQL)
 	if err != nil {
 		panic(err)
