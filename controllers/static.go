@@ -16,16 +16,16 @@ func FAQ(tpl Template) http.HandlerFunc {
 		Answer   string
 	}{
 		{
-			Question: "What is this?",
-			Answer:   "This is a sample FAQ question.",
+			Question: "What is guanyuchi?",
+			Answer:   "Share food photos with your friends.",
 		},
 		{
-			Question: "Where is this 2?",
-			Answer:   "This is a sample FAQ question.",
+			Question: "How to use guanyuchi?",
+			Answer:   "Register with email address.",
 		},
 		{
-			Question: "What is this 3?",
-			Answer:   "This is a sample FAQ question.",
+			Question: "How much does it cost?",
+			Answer:   "Free.",
 		},
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
