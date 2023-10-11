@@ -28,7 +28,6 @@ type SessionService struct {
 
 func (ss *SessionService) Create(userID int) (*Session, error) {
 	// 1. Create the session token
-	// TODO: Implement SessionService.Create
 	bytesPerToken := ss.BytesPerToken
 	if bytesPerToken < MinBytesPerToken {
 		bytesPerToken = MinBytesPerToken
