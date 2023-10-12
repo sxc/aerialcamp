@@ -24,8 +24,8 @@ func FAQ(tpl Template) http.HandlerFunc {
 			Answer:   "Register with email address.",
 		},
 		{
-			Question: "How much does it cost?",
-			Answer:   "Free.",
+			Question: "I lost my password, how to reset?",
+			Answer:   "Go to the login page and click forgot password.",
 		},
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
