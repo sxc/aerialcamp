@@ -1,3 +1,7 @@
-www.guanyuchi.com, guanyuchi.com
+guanyuchi.com {
+    redir https://www.guanyuchi.com
+}
+
+www.guanyuchi.com
 
 reverse_proxy server:3000
