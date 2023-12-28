@@ -16,7 +16,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - ~/data/guanyuchi.com/images:/app/images
+      - ~/data/liaoli.xyz/images:/app/images
     depends_on:
       - db
     logging: *highlight-logging
@@ -38,6 +38,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DATABASE}
     volumes:
-      - ~/data/guanyuchi.com/psql:/var/lib/postgresql/data/pgdata
+      - ~/data/liaoli.xyz/psql:/var/lib/postgresql/data/pgdata
     logging: *highlight-logging
     
