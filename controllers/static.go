@@ -16,11 +16,11 @@ func FAQ(tpl Template) http.HandlerFunc {
 		Answer   string
 	}{
 		{
-			Question: "What is guanyuchi?",
+			Question: "What is liaoli.xyz?",
 			Answer:   "Share food photos with your friends.",
 		},
 		{
-			Question: "How to use guanyuchi?",
+			Question: "How to use liaoli.xyz?",
 			Answer:   "Register with email address.",
 		},
 		{
